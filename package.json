@@ -1,0 +1,25 @@
+{
+  "name": "accounts",
+  "version": "1.0.0",
+  "description": "- Simulação de um sistema de banco desenvolvido em Node.js\r - Nesse sistema o user pode:\r     - Criar uma conta;\r     - Consultar o seu saldo em conta;\r     - Depositar;\r     - Sacar;\r - Todas as funcionalidades do sistema são feitas via terminal de comando;",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NegraoWalker/accounts.git"
+  },
+  "keywords": [],
+  "author": "Walker Esteves Negrão",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NegraoWalker/accounts/issues"
+  },
+  "homepage": "https://github.com/NegraoWalker/accounts#readme",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "inquirer": "^9.0.0"
+  }
+}
