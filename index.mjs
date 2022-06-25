@@ -30,11 +30,11 @@ function operation() {
         } else if (action === "Deseja realizar um depósito") {
             deposit()
         } else if (action === "Deseja consultar o saldo") {
-
+            getAccountBalance()
         } else if (action === "Deseja realizar um saque") {
-
+            withDraw()
         } else if (action === "Deseja sair do sistema") {
-            console.log(chalk.bgBlue.red("sistema finalizado, obrigado por utilizar nosso sistema!!"))
+            console.log(chalk.bgBlue.red("Sistema finalizado, obrigado por utilizar nosso sistema!!"))
             process.exit() //Função que encerra o programa
         }
     }).catch((error) => { console.log(error) })
@@ -146,11 +146,74 @@ function addAmount(accountName, amount) {
     console.log(chalk.green(`Foi depositado o valor de RS${amount} na sua conta`))
 }
 
+// Função que realiza a consulta de saldo na conta do user:
+function getAccountBalance() {
+    inquirer.prompt([
+        {
+            name: "accountName",
+            message: "Qual o nome da conta para consulta?"
+        }
+    ]).then((answer) => {
+        const accountName = answer["accountName"]
+        //Verificando se a conta existe:
+        if (!checkAccount(accountName)) {
+            return getAccountBalance()
+        } else {
+            const accountData = getAccount(accountName)
+            console.log(chalk.bgBlue.black(`Olá, o saldo da sua conta é de R$${accountData.balance}`)) //Exibindo o valor do saldo
+        }
+        operation() //Chama a função que exibe o inicio do sistema
+    }).catch(error => console.log(error))
+}
 
+// Função que realiza um saque na conta do user:
+function withDraw() {
+    inquirer.prompt([
+        {
+            name: "accountName",
+            message: "Qual o nome da conta para realizar o saque?"
+        }
+    ]).then((answer) => {
+        const accountName = answer["accountName"]
+        //Verificando se a conta existe:
+        if (!checkAccount(accountName)) {
+            return withDraw()
+        } else {
+            inquirer.prompt([
+                {
+                    name: "amount",
+                    message: "Qual o valor do saque?"
+                }
+            ]).then((answer) => {
+                const amount = answer["amount"]
+                removeAmount(accountName, amount)
+            }).catch(error => console.log(error))
+        }
+    }).catch(error => console.log(error))
+}
 
+//Função que realiza a operação prática de remoção do valor armazenado na conta do user:
+function removeAmount(accountName, amount) {
+    const accountData = getAccount(accountName)
+    if (!amount) {
+        console.log(chalk.bgRed.black("Ocorreu um erro, tente novamente mais tarde!"))
+        return withDraw()
+    }
 
+    if (accountData.balance < amount) { //Checando se o valor armazenado em conta é suficiente para saque
+        console.log(chalk.bgRed.black("Valor indisponível para o saque!"))
+        return withDraw()
+    }
 
+    accountData.balance = parseFloat(accountData.balance) - parseFloat(amount)
 
+    fs.writeFileSync(`accounts/${accountName}.json`, JSON.stringify(accountData), function (error) {
+        console.log(error)
+    })
+
+    console.log(chalk.green(`Foi realizado um saque de R$${amount} da sua conta!`))
+    operation()
+}
 
 
 
